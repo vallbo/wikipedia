@@ -1,0 +1,21 @@
+LOCATION
+http://en.wikipedia.org/wiki/Slovakia
+http://en.wikipedia.org/wiki/Sofia
+
+PERSONALITY
+http://en.wikipedia.org/wiki/Leonardo_da_Vinci
+http://en.wikipedia.org/wiki/Jesus
+
+TV SERIES
+http://en.wikipedia.org/wiki/Top_Gear_(2002_TV_series)
+
+MOVIES
+http://en.wikipedia.org/wiki/Sin_City_(film)
+
+MEDICAL
+http://en.wikipedia.org/wiki/Ebola_virus_disease
+
+CAR
+http://en.wikipedia.org/wiki/Ford_Mustang
+
+
