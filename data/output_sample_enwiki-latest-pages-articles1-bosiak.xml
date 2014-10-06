@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<documents>
+	<document>
+		<url>http://en.wikipedia.org/wiki/Andorra</url>
+		<type>Country</type>
+		<matchedElements>
+			<item>
+				<name>conventional_long_name</name>
+				<value>Principality of Andorra</value>
+			</item>
+			<item>
+				<name>common_name</name>
+				<value>Andorra</value>
+			</item>
+			<item>
+				<name>official_languages</name>
+				<value>Catalan</value>
+			</item>
+			<!-- ... -->
+		</matchedElements>
+		<unmatchedElements>
+			<item>
+				<name>image_coat</name>
+				<value>Coat of arms of Andorra.svg</value>
+			</item>
+			<!-- ... -->
+		</unmatchedElements>	
+	</document>
+	<!-- ... -->
+</documents>
