@@ -2,9 +2,7 @@ package sk.fiit.vi.project.parsers;
 
 import sk.fiit.vi.project.model.InfoBox;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -13,8 +11,8 @@ import java.util.List;
 public class InfoBoxParser {
 
     public static InfoBox parseInfoBoxData(String data) {
-            List<String> infoBoxList = getInfoBoxList(data);
-            return createInfoBox(infoBoxList);
+        List<String> infoBoxList = getInfoBoxList(data);
+        return createInfoBox(infoBoxList);
     }
 
     private static List<String> getInfoBoxList(String item) {
@@ -25,6 +23,10 @@ public class InfoBoxParser {
 
     private static InfoBox createInfoBox(List<String> data) {
         InfoBox model = new InfoBox(getType(data.get(0).trim()));
+        return model;
+    }
+
+    private static InfoBox getAttributesString(InfoBox model, List<String> data) {
         for(int i=1; i<data.size(); i++) {
             String[] exploded = data.get(i).split("\\=");
             List<String> attribute = Arrays.asList(exploded);

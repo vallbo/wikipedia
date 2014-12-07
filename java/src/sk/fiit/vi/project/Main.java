@@ -1,49 +1,74 @@
 package sk.fiit.vi.project;
 
 import org.carrot2.clustering.lingo.LingoClusteringAlgorithm;
-import sk.fiit.vi.project.formatter.ConsoleFormatter;
-import sk.fiit.vi.project.model.InfoBox;
+import sk.fiit.vi.project.formatter.SqlLite;
 import sk.fiit.vi.project.model.Page;
-import sk.fiit.vi.project.parsers.BaseParser;
-import sk.fiit.vi.project.parsers.InfoBoxParser;
-import sk.fiit.vi.project.xml.*;
+import sk.fiit.vi.project.parsers.ParallelParser;
 
-import javax.xml.xpath.XPathExpressionException;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
 import org.carrot2.core.*;
 
 public class Main {
 
-    public static String testFile = "/shared/sample_enwiki-latest-pages-articles1.xml";
-//    public static String testFile = "/shared/test1";
+    public static int NUM_OF_THREADS = 2;
+    public static String DATA_FILE = "data/data.xml";
 
     public static void main(String[] args) throws Exception {
-        Parser xmlParser = new Parser();
-        xmlParser.parse(testFile);
-        List<Page> parsedTexts = xmlParser.getResult();
-        System.out.println(parsedTexts.size());
+        if(args.length>0) {
+            validateArgs(args);
+            NUM_OF_THREADS = Integer.valueOf(getNumOfThreads(args));
+            DATA_FILE = getDataFile(args);
+        }
+        System.out.println("CONFIGURATION");
+        System.out.println("NUM_OF_THREADS:" + NUM_OF_THREADS);
+        System.out.println("DATA_FILE:"+DATA_FILE);
+        System.out.println("=============");
+        ParallelParser parser = new ParallelParser();
+        List<Page> parsedTexts = parser.parseParallel(DATA_FILE, NUM_OF_THREADS);
+        System.out.println("TOTAL IB:"+parsedTexts.size());
         System.out.println("=============");
         ArrayList<Document> documents = new ArrayList<Document>();
         for(Iterator<Page> i = parsedTexts.iterator(); i.hasNext(); ) {
             Page item = i.next();
             documents.add(new Document(item.getName(), item.getInfoBox().getType()));
-//            documents.add(new Document(item.getName(), item.getInfoBox().getAttributes().keySet().toString()));
         }
-        /* A controller to manage the processing pipeline. */
-        final Controller controller = ControllerFactory.createSimple();
-
-            /*
-             * Perform clustering by topic using the Lingo algorithm. Lingo can
-             * take advantage of the original query, so we provide it along with the documents.
-             */
+        final Controller controller = ControllerFactory.createPooling(NUM_OF_THREADS);
         final ProcessingResult byTopicClusters = controller.process(documents, null,
                 LingoClusteringAlgorithm.class);
-        final List<Cluster> clustersByTopic = byTopicClusters.getClusters();
-        ConsoleFormatter.displayClusters(clustersByTopic);
+        SqlLite.writeResults(byTopicClusters.getClusters());
+        SqlLite.printResults();
+    }
+
+    private static String getNumOfThreads(String[] args) {
+        for (int i=0; i<args.length; i+=2) {
+            if(args[i].contentEquals("-threads")) {
+                return args[i+1];
+            }
+        }
+        return String.valueOf(NUM_OF_THREADS);
+    }
+
+    private static String getDataFile(String[] args) {
+        for (int i=0; i<args.length; i+=2) {
+            if(args[i].contentEquals("-file")) {
+                return args[i+1];
+            }
+        }
+        return DATA_FILE;
+    }
+
+    private static void validateArgs(String[] args) {
+        String arguments[] = {"-file","-threads"};
+        for (int i=0; i<args.length; i+=2) {
+            if(!Arrays.asList(arguments).contains(args[i])) {
+                System.out.println("Usage: java -Xms2G -Xmm6G -jar <path to program> [-threads <number of threads>, -file <path to source file>] ");
+                System.exit(123);
+            }
+        }
     }
 
 }
