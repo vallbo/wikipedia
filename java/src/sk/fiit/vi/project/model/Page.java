@@ -1,7 +1,7 @@
 package sk.fiit.vi.project.model;
 
 /**
- * Created by Vallbo_work on 22/11/14.
+ * Created by VB on 22/11/14.
  */
 public class Page {
 

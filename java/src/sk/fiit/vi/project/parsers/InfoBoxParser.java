@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by Vallbo_work on 09/11/14.
+ * Created by VB on 09/11/14.
  */
 public class InfoBoxParser {
 
@@ -22,8 +22,11 @@ public class InfoBoxParser {
     }
 
     private static InfoBox createInfoBox(List<String> data) {
-        InfoBox model = new InfoBox(getType(data.get(0).trim()));
-        return model;
+        String type = getType(data.get(0).trim());
+        if(type.isEmpty()) {
+            return null;
+        }
+        return new InfoBox(type);
     }
 
     private static InfoBox getAttributesString(InfoBox model, List<String> data) {
@@ -39,7 +42,7 @@ public class InfoBoxParser {
     }
 
     private static String getType(String data) {
-        return data.replaceAll("<!--.*-->", "").replaceAll("\\|", "").trim();
+        return data.replaceFirst("^([a-z\\sA-Z\\._-]+).*$", "$1").trim();
     }
 
 }

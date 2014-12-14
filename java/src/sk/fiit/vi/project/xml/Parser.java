@@ -1,6 +1,7 @@
 package sk.fiit.vi.project.xml;
 
 import org.xml.sax.SAXException;
+import sk.fiit.vi.project.model.InfoBox;
 import sk.fiit.vi.project.model.Page;
 import sk.fiit.vi.project.parsers.BaseParser;
 import sk.fiit.vi.project.parsers.InfoBoxParser;
@@ -37,24 +38,29 @@ public class Parser implements Callable<List<Page>> {
                             @Override
                             public void process(StructuredNode node) throws XPathExpressionException {
                                 i++;
-                                if((i % numOfThreads)!=threadNum) {
+                                if ((i % numOfThreads) != threadNum) {
                                     return;
                                 }
                                 String title = node.queryString("title/text()");
-                                String text = node.queryString("//text/text()").replaceAll("[\r\n]+", " ");;
+                                String text = node.queryString("//text/text()").replaceAll("[\r\n]+", " ");
+                                ;
                                 if (!text.matches("^(?i).*infobox.*$")) {
                                     return;
                                 }
                                 String infoboxString = BaseParser.parseString(text);
-                                if(infoboxString.isEmpty()) {
+                                if (infoboxString.isEmpty()) {
                                     return;
                                 }
-                                result.add(new Page(title, InfoBoxParser.parseInfoBoxData(infoboxString)));
+                                InfoBox ib = InfoBoxParser.parseInfoBoxData(infoboxString);
+                                if (ib == null) {
+                                    return;
+                                }
+                                result.add(new Page(title, ib));
                             }
                         }
         );
         r.parse(new FileInputStream(fileName));
-        System.out.println("Parser-"+threadNum+" found:"+this.result.size());
+        System.out.println("Parser-" + threadNum + " found:" + this.result.size());
         return this.result;
     }
 

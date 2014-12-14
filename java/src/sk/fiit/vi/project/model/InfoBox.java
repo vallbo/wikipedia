@@ -3,7 +3,7 @@ package sk.fiit.vi.project.model;
 import java.util.*;
 
 /**
- * Created by Vallbo_work on 09/11/14.
+ * Created by VB on 09/11/14.
  */
 public class InfoBox {
 
